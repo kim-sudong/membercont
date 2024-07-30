@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.himedia.mc.MenuDAO">
+	<select id="getmenu" resultType="com.himedia.mc.MenuDTO">
+		select * from menu
+	</select>
+	<insert id="insertm">
+		insert into menu set name=#{param1}, price=#{param2}
+	</insert>
+	<delete id="delmenu">
+		delete from menu where id=#{param1}
+	</delete>
+	<update id="updateM">
+		update menu set name=#{param2}, price=#{param3} where id=#{param1}
+	</update>
+	<insert id="insertsales">
+		insert into revenue set mobile=#{param1},menuid=#{param2},qty=#{param3},price=#{param4}
+	</insert>
+	<select id="getSales" resultType="com.himedia.mc.SalesDTO">
+		select b.id,b.mobile,a.name,b.qty,b.price,b.created
+		from menu a,revenue b
+		where b.menuid = a.id;
+	</select>
+	<select id="getType" resultType="com.himedia.mc.TypeDTO">
+		select id,roomname from roomtype
+	</select>
+	<insert id="insertRoom">
+		insert into room set name=#{param1},type=#{param2},personnel=#{param3},price=#{param4};
+	</insert>
+	<select id="getRoom" resultType="com.himedia.mc.RoomDTO">
+		select a.id,a.name,b.roomname,a.personnel,a.price
+		from room a,roomtype b
+		where a.type = b.id;
+	</select>
+	<delete id="delRoom">
+		delete from room where id=#{param1}
+	</delete>
+	<update id="upRoom">
+		update room set name=#{param1},type=#{param2},personnel=#{param3},price=#{param4} where id=#{param5};
+	</update>
+	<select id="sum" resultType="_int">
+		select sum(price) from revenue
+	</select>
+</mapper>
