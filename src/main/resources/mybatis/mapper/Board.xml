@@ -35,5 +35,22 @@
 	<delete id="delselx">
 		delete from board where id=#{param1}
 	</delete>
+	<select id="getmemid" resultType="_int">
+		select id from member where userid=#{param1}
+	</select>
+	<insert id="insertrecon">
+		insert into reply set par_id=#{param1},content=#{param2},writer=#{param3}
+	</insert>
+	<select id="getre" resultType="com.himedia.mc.ReDTO">
+		select b.id,b.par_id,b.content,a.userid,b.updated
+		from member a,reply b
+		where a.id=b.writer and par_id=#{param1} order by updated desc
+	</select>
+	<delete id="redel">
+		delete from reply where id=#{param1}
+	</delete>
+	<update id="reup">
+		update reply set content=#{param1} where id=#{param2}
+	</update>
 	
 </mapper>

@@ -9,8 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
+import jakarta.security.auth.message.callback.PrivateKeyCallback.Request;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -320,6 +323,11 @@ public class HomeControl {
 		BoardDTO bdto = bdao.getView(id);
 		bdao.addHit(id);
 		model.addAttribute("board",bdto);
+
+			ArrayList<ReDTO> a = bdao.getre(id);
+			model.addAttribute("acb",a);
+			System.out.println(model.getAttribute("acb"));
+			
 		return "board/view";
 	}
 	@GetMapping("/delete")
@@ -431,5 +439,59 @@ public class HomeControl {
 		
 		return "room";
 	}
+//	@PostMapping("/recontent")
+//	@ResponseBody
+//	public String recontent(HttpServletRequest req,Model model) {
+//		String recon = req.getParameter("recon");
+//		int parid = Integer.parseInt(req.getParameter("parid"));
+//		HttpSession s = req.getSession();
+//		String userid = (String)s.getAttribute("id");
+//		int memid = bdao.getmemid(userid);
+//		//System.out.println(memid+recon+parid);
+//		bdao.insertrecon(parid,recon,memid);
+////		ArrayList<ReDTO> a = bdao.getre(parid);
+////		model.addAttribute("a",a);
+//		return "board/view";
+//	}
 	
-}
+	
+	@GetMapping("/reshow")
+	public String reshow(HttpServletRequest req,Model model) {
+		String con = req.getParameter("recon");
+		System.out.println(con);
+		int parid = Integer.parseInt(req.getParameter("bid"));
+		System.out.println(parid);
+		HttpSession s = req.getSession();
+		String userid = (String)s.getAttribute("id");
+		int memid = bdao.getmemid(userid);
+		System.out.println(memid);
+		bdao.insertrecon(parid,con,memid);
+		return "redirect:/view?id="+parid;
+	}
+	@GetMapping("/redel")
+	public String redel(HttpServletRequest req,Model model) {
+		int id = Integer.parseInt(req.getParameter("id"));
+		int parid = Integer.parseInt(req.getParameter("parid"));
+		bdao.redel(id);
+		
+		return "redirect:/view?id="+parid;
+	}
+	@GetMapping("/upc")
+	public String reuc(HttpServletRequest req,Model model) {
+		int id = Integer.parseInt(req.getParameter("id"));
+		int parid = Integer.parseInt(req.getParameter("parid"));
+		model.addAttribute("id",id);
+		model.addAttribute("parid",parid);
+		
+		return "board/upc";
+	}
+	
+	@GetMapping("/reup")
+	public String reup(HttpServletRequest req,Model model) {
+		int id = Integer.parseInt(req.getParameter("id"));
+		int parid = Integer.parseInt(req.getParameter("parid"));
+		String upcon = req.getParameter("upcon");
+		bdao.reup(upcon, id);
+		return "redirect:/view?id="+parid;
+	}
+}	

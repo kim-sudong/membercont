@@ -15,5 +15,9 @@ public interface BoardDAO {
 	void addHit(int x);
 	BoardDTO delsel(int a);
 	void delselx(int a);
-
+	int getmemid(String a);
+	void insertrecon(int a,String b,int c);
+	ArrayList<ReDTO> getre(int a);
+	void redel(int a);
+	void reup(String a,int b);
 }
