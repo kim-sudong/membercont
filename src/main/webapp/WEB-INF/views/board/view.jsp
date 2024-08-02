@@ -61,10 +61,12 @@ td:nth-child(1){
 	<c:forEach var='re' items='${acb}'>
 		<tr><td style='display:none;'>${re.id}</td><td>${re.userid}</td><td>${re.content}</td><td>${re.updated}</td>
 														<td><input type='hidden' id='reid' value='${re.id}'>
-														<a id='dd' style='cursor: pointer;'>댓글</a>
+														<input type='hidden' id='parid' value='${re.par_id}'>
+														<input type='button' id='dd' value='댓글'>
 														<c:if test='${sessionScope.id == re.userid }'>
-															<a href='/upc?id=${re.id}&parid=${re.par_id}'>수정</a>
-															<a href='/redel?id=${re.id}&parid=${re.par_id}'>삭제</a></c:if></td></tr>
+															<input type='button' id='up' value='수정'>
+															<input type='button' id='del' value='삭제'>	</c:if></td></tr>
+															<%-- <a href='/redel?id=${re.id}&parid=${re.par_id}'>삭제</a></c:if></td></tr> --%>
 	</c:forEach>
 </tfoot>
 </table>
@@ -78,9 +80,25 @@ $(document)
 })
 .on('click','#dd',function(){
 	console.log($('#reid').val());
-	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddcontent></textarea></td><td><input type=button id=btndd value=등록></td></tr>'
+	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddcontent></textarea></td><td><input type=button id=btndd value=등록>  <input type=button id=btnc value=취소></td></tr>'
 	//$('#reply tfoot').append(str);
 	$(this).closest('tr').after(str);
+})
+.on('click','#up',function(){
+	console.log($('#reid').val());
+	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddcontent></textarea></td><td><input type=button id=btnup value=수정>  <input type=button id=upc value=취소></td></tr>'
+	//$('#reply tfoot').append(str);
+	$(this).closest('tr').after(str);
+})
+.on('click','#del',function(){
+	let reid = $('#reid').val();
+	let parid = $('#parid').val();
+	location.href='/redel?id='+reid+'&parid='+parid
+})
+.on('click','#btnup',function(){
+	let reid = $('#reid').val();
+	let parid = $('#parid').val();
+	location.href='/upc?id='+reid+'&parid='+parid
 })
 .on('click','#btndd',function(){
 	let ddcon = $('#ddcontent').val()
@@ -92,7 +110,10 @@ $(document)
 		}
 	},'text')
 })
-/* function ddre(){
+.on('click','#btnc,#upc',function(){
+	location.reload();
+})
+function ddre(){
 	 let ar = [];
 	let str = '';
 	
@@ -108,13 +129,14 @@ $(document)
 								console.log('zzzzz',x.Userid);
 									str = '<tr style="background-color:#fef0f6;"><td style="border:none;">'+x.Userid+'</td><td style="border:none;">'+x.Content+'</td><td style="border:none;">'+x.Updated+'</td><td style="border:none;">아 겁나짜증나</td></tr>'								
 									
-									tr.after(str);
+									//tr.after(str);
+									$('#reply tfoot tr:eq('+0+')').after(str);
 									console.log(id);		
 							}
 						}
 					}) 
 	}) 
-		 */
+}	 
 	/* console.log($('#reply tfoot tr').length);
 	let tl = $('#reply tfoot tr').length;
 	for(let i = 0 ; i<tl ; i++ ){
@@ -137,42 +159,6 @@ $(document)
 				})  
 	} */
 //}
-function ddre() {
-    $('#reply tfoot tr').each(function() {
-        let id = $(this).find('td:eq(0)').text();
-        let tr = $(this); // 현재 tr 요소를 저장
-
-        console.log('Requesting ID:', id);
-
-        $.post('/ddre', { id: id }, function(data) {
-            // 데이터 요청이 성공적으로 완료된 후
-            console.log('Received data for ID', id, ':', data);
-
-            let str = ''; // HTML 문자열을 누적할 변수
-
-            // 받은 데이터 배열을 순회
-            for (let x of data) {
-                if (x.parid == id) {
-                    console.log('Matching data:', x.Userid);
-                    // HTML 문자열 생성
-                    str += '<tr style="background-color:#fef0f6;">' +
-                           '<td style="border:none;">' + x.Userid + '</td>' +
-                           '<td style="border:none;">' + x.Content + '</td>' +
-                           '<td style="border:none;">' + x.Updated + '</td>' +
-                           '<td style="border:none;">아 겁나짜증나</td>' +
-                           '</tr>';
-                }
-            }
-
-            // 생성한 HTML 문자열을 현재 tr의 뒤에 추가
-            if (str) {
-                tr.after(str); // 현재 tr의 뒤에 추가
-            }
-        }, 'json').fail(function(jqXHR, textStatus, errorThrown) {
-            console.error('Request failed for ID', id, ':', textStatus, errorThrown);
-        });
-    });
-}
 
 </script>
 </html>
