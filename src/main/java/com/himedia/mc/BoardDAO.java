@@ -20,4 +20,5 @@ public interface BoardDAO {
 	ArrayList<ReDTO> getre(int a);
 	void redel(int a);
 	void reup(String a,int b);
+	void reinsert(int a,String b,int c);
 }

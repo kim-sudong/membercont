@@ -9,11 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
-import jakarta.security.auth.message.callback.PrivateKeyCallback.Request;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -326,7 +323,7 @@ public class HomeControl {
 
 			ArrayList<ReDTO> a = bdao.getre(id);
 			model.addAttribute("acb",a);
-			System.out.println(model.getAttribute("acb"));
+			//System.out.println(model.getAttribute("acb"));
 			
 		return "board/view";
 	}
@@ -493,5 +490,34 @@ public class HomeControl {
 		String upcon = req.getParameter("upcon");
 		bdao.reup(upcon, id);
 		return "redirect:/view?id="+parid;
+	}
+	@PostMapping("/ddinsert")
+	@ResponseBody
+	public String rein(HttpServletRequest req,Model model) {
+		String ddcon = req.getParameter("ddcon");
+		int reid= Integer.parseInt(req.getParameter("reid"));
+		HttpSession s = req.getSession();
+		String userid = (String)s.getAttribute("id");
+		int memid = bdao.getmemid(userid);
+		bdao.reinsert(reid, ddcon, memid);
+		return"ok";
+	}
+	@PostMapping("/ddre")
+	@ResponseBody
+	public String ssre(HttpServletRequest req,Model model) {
+		int id= Integer.parseInt(req.getParameter("id"));
+		ArrayList<ReDTO> a = bdao.getre(id);
+		JSONArray ddre = new JSONArray();
+		for(ReDTO Rdto : a) {
+			JSONObject T = new JSONObject();
+			T.put("id",Rdto.getId());
+			T.put("parid",Rdto.getPar_id());
+			T.put("Userid",Rdto.getUserid());
+			T.put("Content",Rdto.getContent());
+			T.put("Updated",Rdto.getUpdated());
+			
+			ddre.put(T);
+		}
+		return ddre.toString();
 	}
 }	

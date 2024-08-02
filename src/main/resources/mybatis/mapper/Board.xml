@@ -52,5 +52,8 @@
 	<update id="reup">
 		update reply set content=#{param1} where id=#{param2}
 	</update>
+	<insert id="reinsert">
+		insert into reply set par_id=#{param1}, content=#{param2}, writer=#{param3}
+	</insert>
 	
 </mapper>
