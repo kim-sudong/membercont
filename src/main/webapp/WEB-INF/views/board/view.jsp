@@ -45,64 +45,84 @@ td:nth-child(1){
 </c:if>
 </td></tr>
 </table><br><br>
-<form method="get" action="/reshow">
+<!-- <form method="get" action="/reshow"> -->
 <table id='reply'>
-<input type='hidden' name='bid' value="${board.id}">
+<input type='hidden' id='bid' value="${board.id}">
 <thead>
 	<tr><td colspan='4'>댓글입력</td></tr>
-	<tr><td style='text-align:right;' colspan='4'><textarea name='recon' rows=5 cols=60></textarea><br>
-		<input type='submit' value='등록' id='btn'>
-		<input type='reset' value='취소' id='reset'></td></tr>
+	<tr><td style='text-align:right;' colspan='4'><textarea id='recon' rows=5 cols=60></textarea><br>
+		<input type='button' value='등록' id='btn'>
+		<input type='button' value='취소' id='reset'></td></tr>
 </thead>
 <tbody>
 	<tr><td>작성자</td><td>내용</td><td>시간</td><td>수정</td></tr>
 </tbody>
 <tfoot>
+<input type='text' id='reid'>
 	<c:forEach var='re' items='${acb}'>
 		<tr><td style='display:none;'>${re.id}</td><td>${re.userid}</td><td>${re.content}</td><td>${re.updated}</td>
-														<td><input type='hidden' id='reid' value='${re.id}'>
-														<input type='hidden' id='parid' value='${re.par_id}'>
-														<input type='button' id='dd' value='댓글'>
+														<td><input type='button' id='dd' value='댓글'>
 														<c:if test='${sessionScope.id == re.userid }'>
 															<input type='button' id='up' value='수정'>
 															<input type='button' id='del' value='삭제'>	</c:if></td></tr>
-															<%-- <a href='/redel?id=${re.id}&parid=${re.par_id}'>삭제</a></c:if></td></tr> --%>
+														
 	</c:forEach>
 </tfoot>
 </table>
-</form>
+<!-- </form> -->
 </body>
 <script src="https://code.jquery.com/jquery-latest.js"></script>
 <script>
 $(document)
 .ready(function(){
-	ddre();
+	//ddre();
+})
+.on('click','#btn',function(){
+	let bid = $('#bid').val()
+	let recon = $('#recon').val()
+	console.log(bid,recon);
+	$.post('/reshow',{bid:bid,recon:recon},function(data){
+		if(data=='ok'){
+			location.reload()
+		}
+	},'text')
 })
 .on('click','#dd',function(){
 	console.log($('#reid').val());
 	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddcontent></textarea></td><td><input type=button id=btndd value=등록>  <input type=button id=btnc value=취소></td></tr>'
-	//$('#reply tfoot').append(str);
 	$(this).closest('tr').after(str);
 })
 .on('click','#up',function(){
-	console.log($('#reid').val());
-	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddcontent></textarea></td><td><input type=button id=btnup value=수정>  <input type=button id=upc value=취소></td></tr>'
-	//$('#reply tfoot').append(str);
+	console.log($(this).closest('tr').find('td:eq(0)').text());
+	$('#reid').val($(this).closest('tr').find('td:eq(0)').text());
+	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddup></textarea></td><td><input type=button id=btnup value=수정>  <input type=button id=upc value=취소></td></tr>'
 	$(this).closest('tr').after(str);
 })
 .on('click','#del',function(){
+	$('#reid').val($(this).closest('tr').find('td:eq(0)').text());
 	let reid = $('#reid').val();
-	let parid = $('#parid').val();
-	location.href='/redel?id='+reid+'&parid='+parid
+	console.log(reid);
+	$.post('/redel',{reid:reid},function(data){
+		if(data=='ok'){
+			location.reload()
+		}
+	},'text')
 })
 .on('click','#btnup',function(){
 	let reid = $('#reid').val();
-	let parid = $('#parid').val();
-	location.href='/upc?id='+reid+'&parid='+parid
+	let ddup = $('#ddup').val();
+	console.log(reid,ddup)
+	$.post('/reup',{reid:reid,ddup:ddup},function(data){
+		if(data=='ok'){
+			location.reload()
+		}
+	},'text')
 })
 .on('click','#btndd',function(){
 	let ddcon = $('#ddcontent').val()
+	//let reid = $(this).closest('tr').$('#reid').val()
 	let reid = $('#reid').val()
+	console.log(reid,ddcon)
 	if($('#ddcontent').val()==''){alert('내용을 입력해'); return false;}
 	$.post('/ddinsert',{reid:reid,ddcon:ddcon},function(data){
 		if(data=='ok'){
@@ -110,15 +130,22 @@ $(document)
 		}
 	},'text')
 })
-.on('click','#btnc,#upc',function(){
-	location.reload();
+.on('click','#btnc,#reset,#upc',function(){
+	$('#ddcontent,#recon,#ddup').val('');
 })
-function ddre(){
+function reply(){
+	let bid = $('#bid').val()
+	$.post('/reply',{bid:bid},function(data){
+		if(data=='ok'){
+		}
+	},'text')
+}
+/* function ddre(){
 	 let ar = [];
 	let str = '';
 	
 	$('#reply tfoot tr').each(function(){
-		let id = $(this).find('td:eq(0)').text();
+	 	let id = $(this).find('td:eq(0)').text();
 		let tr = $(this);
 		console.log(id);
 			$.post('/ddre',{id:id},function(data){
@@ -135,8 +162,8 @@ function ddre(){
 							}
 						}
 					}) 
-	}) 
-}	 
+	})  
+}	  */
 	/* console.log($('#reply tfoot tr').length);
 	let tl = $('#reply tfoot tr').length;
 	for(let i = 0 ; i<tl ; i++ ){

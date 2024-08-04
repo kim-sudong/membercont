@@ -452,7 +452,22 @@ public class HomeControl {
 //	}
 	
 	
-	@GetMapping("/reshow")
+//	@PostMapping("/reply")
+//	@ResponseBody
+//	public String reply(HttpServletRequest req,Model model) {
+//		int parid = Integer.parseInt(req.getParameter("bid"));
+//		ArrayList<ReDTO> a = bdao.getre(parid);
+//		HttpSession s = req.getSession();
+//		String userid = (String)s.getAttribute("id");
+//		int memid = bdao.getmemid(userid);
+//		System.out.println(memid);
+//		bdao.insertrecon(parid,con,memid);
+//		return "ok";
+//	}
+	
+	
+	@PostMapping("/reshow")
+	@ResponseBody
 	public String reshow(HttpServletRequest req,Model model) {
 		String con = req.getParameter("recon");
 		System.out.println(con);
@@ -463,33 +478,25 @@ public class HomeControl {
 		int memid = bdao.getmemid(userid);
 		System.out.println(memid);
 		bdao.insertrecon(parid,con,memid);
-		return "redirect:/view?id="+parid;
+		return "ok";
 	}
-	@GetMapping("/redel")
+	@PostMapping("/redel")
+	@ResponseBody
 	public String redel(HttpServletRequest req,Model model) {
-		int id = Integer.parseInt(req.getParameter("id"));
-		int parid = Integer.parseInt(req.getParameter("parid"));
+		int id = Integer.parseInt(req.getParameter("reid"));
 		bdao.redel(id);
 		
-		return "redirect:/view?id="+parid;
-	}
-	@GetMapping("/upc")
-	public String reuc(HttpServletRequest req,Model model) {
-		int id = Integer.parseInt(req.getParameter("id"));
-		int parid = Integer.parseInt(req.getParameter("parid"));
-		model.addAttribute("id",id);
-		model.addAttribute("parid",parid);
-		
-		return "board/upc";
+		return "ok";
 	}
 	
-	@GetMapping("/reup")
+
+	@PostMapping("/reup")
+	@ResponseBody
 	public String reup(HttpServletRequest req,Model model) {
-		int id = Integer.parseInt(req.getParameter("id"));
-		int parid = Integer.parseInt(req.getParameter("parid"));
-		String upcon = req.getParameter("upcon");
+		int id = Integer.parseInt(req.getParameter("reid"));
+		String upcon = req.getParameter("ddup");
 		bdao.reup(upcon, id);
-		return "redirect:/view?id="+parid;
+		return "ok";
 	}
 	@PostMapping("/ddinsert")
 	@ResponseBody
