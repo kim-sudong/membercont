@@ -48,6 +48,7 @@ td:nth-child(1){
 <!-- <form method="get" action="/reshow"> -->
 <table id='reply'>
 <input type='hidden' id='bid' value="${board.id}">
+<input type='text' id='ssid' value="${sessionScope.id}">
 <thead>
 	<tr><td colspan='4'>댓글입력</td></tr>
 	<tr><td style='text-align:right;' colspan='4'><textarea id='recon' rows=5 cols=60></textarea><br>
@@ -75,7 +76,10 @@ td:nth-child(1){
 <script>
 $(document)
 .ready(function(){
-	//ddre();
+	ddre(processData);
+	//str1 = '<tr style="background-color:#fef0f6;"><td style="border:none;">zz</td><td style="border:none;">xx</td><td style="border:none;">cc</td><td style="border:none;">아 겁나짜증나</td></tr>'
+	//$('#reply tfoot tr:eq('+1+')').after(str1);
+	//console.log('jkjkjk',$('#reply tfoot tr:eq('+0+')').find('td:eq(0)').text());
 })
 .on('click','#btn',function(){
 	let bid = $('#bid').val()
@@ -89,16 +93,17 @@ $(document)
 })
 .on('click','#dd',function(){
 	console.log($('#reid').val());
+	$('#reid').val($(this).closest('tr').find('td:eq(0)').text());
 	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddcontent></textarea></td><td><input type=button id=btndd value=등록>  <input type=button id=btnc value=취소></td></tr>'
 	$(this).closest('tr').after(str);
 })
-.on('click','#up',function(){
+.on('click','#up,#btnup2',function(){
 	console.log($(this).closest('tr').find('td:eq(0)').text());
 	$('#reid').val($(this).closest('tr').find('td:eq(0)').text());
 	let str = '<tr><td colspan=3><textarea rows=5 cols=35 id=ddup></textarea></td><td><input type=button id=btnup value=수정>  <input type=button id=upc value=취소></td></tr>'
 	$(this).closest('tr').after(str);
 })
-.on('click','#del',function(){
+.on('click','#del,#btnc2',function(){
 	$('#reid').val($(this).closest('tr').find('td:eq(0)').text());
 	let reid = $('#reid').val();
 	console.log(reid);
@@ -130,8 +135,9 @@ $(document)
 		}
 	},'text')
 })
-.on('click','#btnc,#reset,#upc',function(){
+.on('click','#btnc,#reset,#upc,#btnc2',function(){
 	$('#ddcontent,#recon,#ddup').val('');
+	location.reload();
 })
 function reply(){
 	let bid = $('#bid').val()
@@ -140,52 +146,82 @@ function reply(){
 		}
 	},'text')
 }
-/* function ddre(){
-	 let ar = [];
-	let str = '';
+
+ function ddre(callback){
 	
-	$('#reply tfoot tr').each(function(){
-	 	let id = $(this).find('td:eq(0)').text();
-		let tr = $(this);
-		console.log(id);
-			$.post('/ddre',{id:id},function(data){
+	ar = [];
+	//let str = '';
+	//let i = 0;
+	
+		//for(i=0 ; i<$('#reply tfoot tr').length; i++){
+			//(function(i) {
+	 	//let id = $('#reply tfoot tr:eq('+i+')').find('td:eq(0)').text();
+		//console.log('qqqqqqqqqqqqqqqqqqqqq',i);
+			$.post('/ddre',{},function(data){
 				ar = data;
-			},'json').done(function(){
+				callback(data);
+				//console.log(ar);
+				/*  for(let x of ar){
+					if(x.parid==id){
+						console.log('zzzzz',x.Userid);
+						console.log('qqqqq',x.Content);
+							str = '<tr style="background-color:#fef0f6;"><td style="border:none;">'+x.Userid+'</td><td style="border:none;">'+x.Content+'</td><td style="border:none;">'+x.Updated+'</td><td style="border:none;">아 겁나짜증나</td></tr>'								
+							 
+							$('#reply tfoot tr:eq('+i+')').after(str);
+							console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',i);
+							console.log(id);		
+							break;
+					}
+				}  */
+				 
+			},'json')
+			//})(i); 
+			
+			/*  .done(function(){
 						for(let x of ar){
 							if(x.parid==id){
 								console.log('zzzzz',x.Userid);
 									str = '<tr style="background-color:#fef0f6;"><td style="border:none;">'+x.Userid+'</td><td style="border:none;">'+x.Content+'</td><td style="border:none;">'+x.Updated+'</td><td style="border:none;">아 겁나짜증나</td></tr>'								
-									
-									//tr.after(str);
-									$('#reply tfoot tr:eq('+0+')').after(str);
-									console.log(id);		
+									$('#reply tfoot tr:eq('+i+')').after(str);
+									console.log(id);	
+									console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',i);
 							}
 						}
-					}) 
-	})  
-}	  */
-	/* console.log($('#reply tfoot tr').length);
-	let tl = $('#reply tfoot tr').length;
-	for(let i = 0 ; i<tl ; i++ ){
-		console.log( $('#reply tfoot tr:eq('+i+')').find('td:eq(0)').text())
-		let id = $('#reply tfoot tr:eq('+i+')').find('td:eq(0)').text();
-		$.post('/ddre',{id:id},function(data){
-			ar = data;
-		},'json').done(function(){
-					for(let x of ar){
-						if(x.parid==id){
-							console.log(x.Writer);
-								str = '<tr style="background-color:#fef0f6;"><td style="border:none;">'+x.Userid+'</td><td style="border:none;">'+x.Content+'</td><td style="border:none;">'+x.Updated+'</td><td style="border:none;">아 겁나짜증나</td></tr>'								
-								if($('#reply tfoot tr:eq('+i+')').find('td:eq(0)').text()==x.parid){
-								$(this).after(str);
-								}
-								console.log(i);
-						}
-						
+			}) */
+//		}
+}	  
+	
+
+ 
+ 
+ 
+ function processData(data) {
+	 
+	console.log(ar);
+	for(i=0 ; i<$('#reply tfoot tr').length; i++){
+	let id = $('#reply tfoot tr:eq('+i+')').find('td:eq(0)').text();
+			//console.log('qqqqqqqqqqqqqqqqqqqqq',i);
+		
+			for(let x of ar){
+			if(x.parid==id){
+				console.log('zzzzz',x.Userid);
+				console.log('qqqqq',x.Content);
+					if($('#ssid').val()==x.Userid){
+					str = '<tr style="background-color:#fef0f6;"><td style="display:none;">'+x.id+'</td><td style="border:none;">'+x.Userid+'</td><td style="border:none;">'+x.Content+'</td><td style="border:none;">'+x.Updated+'</td><td style="border:none;"><input type=button id=btnup2 value=수정>  <input type=button id=btnc2 value=삭제></td></tr>'								 
+					$('#reply tfoot tr:eq('+i+')').after(str);
 					}
-				})  
-	} */
-//}
+					else{
+						str = '<tr style="background-color:#fef0f6;"><td style="display:none;">'+x.id+'</td><td style="border:none;">'+x.Userid+'</td><td style="border:none;">'+x.Content+'</td><td style="border:none;">'+x.Updated+'</td><td style="border:none;">니가쓴거 아니잖아</td></tr>'								 
+						$('#reply tfoot tr:eq('+i+')').after(str);
+					}
+					console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',i);
+					console.log(id);		
+					
+			}
+		}  
+	}
+ }
+ 
 
 </script>
 </html>

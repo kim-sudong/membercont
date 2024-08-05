@@ -55,5 +55,9 @@
 	<insert id="reinsert">
 		insert into reply set par_id=#{param1}, content=#{param2}, writer=#{param3}
 	</insert>
-	
+	<select id="get" resultType="com.himedia.mc.ReDTO">
+		select b.id,b.par_id,b.content,a.userid,b.updated
+		from member a,reply b
+		where a.id=b.writer order by updated desc
+	</select>
 </mapper>

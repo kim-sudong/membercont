@@ -18,7 +18,9 @@ public interface BoardDAO {
 	int getmemid(String a);
 	void insertrecon(int a,String b,int c);
 	ArrayList<ReDTO> getre(int a);
+	ArrayList<ReDTO> get();
 	void redel(int a);
 	void reup(String a,int b);
 	void reinsert(int a,String b,int c);
+	
 }

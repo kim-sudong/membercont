@@ -512,8 +512,8 @@ public class HomeControl {
 	@PostMapping("/ddre")
 	@ResponseBody
 	public String ssre(HttpServletRequest req,Model model) {
-		int id= Integer.parseInt(req.getParameter("id"));
-		ArrayList<ReDTO> a = bdao.getre(id);
+		//int id= Integer.parseInt(req.getParameter("id"));
+		ArrayList<ReDTO> a = bdao.get();
 		JSONArray ddre = new JSONArray();
 		for(ReDTO Rdto : a) {
 			JSONObject T = new JSONObject();
